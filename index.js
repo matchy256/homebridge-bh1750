@@ -14,7 +14,13 @@ module.exports = function(homebridge) {
 function BH1750(log, config) {
     this.log = log;
     this.name = config.name;
-    this.lightSensor = new BH1750_Library({});
+    this.address = 0x23;
+    if (config.address) {
+        this.address = parseInt(config.address);
+    }
+    this.lightSensor = new BH1750_Library({
+        address: this.address
+    });
 
     // info service
     this.informationService = new Service.AccessoryInformation();
