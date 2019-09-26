@@ -43,7 +43,8 @@ This is an example configuration file
     "name" : "BH1750FVI Light Sensor",
     "serial" : "6B4A3603-1EC9-4965-8A3F-F84887C2C90C",
     "model" : "BH1750FVI",
-    "autoRefresh" : 300
+    "autoRefresh" : 300,
+    "address": 0x23
 }
 ```
 
@@ -54,3 +55,4 @@ This is an example configuration file
 | serial         | Optional. The serial number for this accessory. |
 | model         | Optional. The model for this accessory. |
 | autoRefresh         | Optional. The number of seconds until a new value is read from the sensor and pushed to HomeKit. |
+| address       | Optional. 0x23 or 0x5c |
