@@ -1,7 +1,7 @@
 var Service;
 var Characteristic;
 var HomebridgeAPI;
-var BH1750_Library = require('bh1750');
+var BH1750_Library = require('bh1750-sensor');
 
 module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
@@ -27,8 +27,8 @@ function BH1750(log, config) {
         
     this.informationService
     .setCharacteristic(Characteristic.Manufacturer, "ROHM SEMICONDUCTOR")
-    .setCharacteristic(Characteristic.Model, config.model || "BH1750")
-    .setCharacteristic(Characteristic.SerialNumber, config.serial || "A7CE1720-540E-4CCF-800D-9049B941812F");
+    .setCharacteristic(Characteristic.Model, config.model || "BH1750")
+    .setCharacteristic(Characteristic.SerialNumber, config.serial || "A7CE1720-540E-4CCF-800D-9049B941812F");
 
 
 
@@ -42,20 +42,27 @@ function BH1750(log, config) {
         .on('get', this.getLux.bind(this));
 
     if (config.autoRefresh && config.autoRefresh > 0) {
-        var that = this;
-        setInterval(function() {
-            that.lightSensor.readLight(function(value) {
+        const that = this;
+        setInterval(async () => {
+            try {
+                const value = await that.lightSensor.readLight();
                 that.service_lux.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
                     .setValue(parseFloat(value.toFixed(2)));
-            });
+            } catch (err) {
+                that.log.error('Error reading light level for auto-refresh:', err);
+            }
         }, config.autoRefresh * 1000);
     }
 }
 
-BH1750.prototype.getLux = function(callback) {
-    this.lightSensor.readLight(function(value) {
+BH1750.prototype.getLux = async function(callback) {
+    try {
+        const value = await this.lightSensor.readLight();
         callback(null, parseFloat(value.toFixed(2)));
-    });
+    } catch (err) {
+        this.log.error('Error getting light level:', err);
+        callback(err);
+    }
 };
 
 BH1750.prototype.getServices = function() {
