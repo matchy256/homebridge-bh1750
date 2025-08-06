@@ -16,7 +16,7 @@ function BH1750(log, config) {
     this.name = config.name;
     this.address = 0x23;
     if (config.address) {
-        this.address = parseInt(config.address);
+        this.address = parseInt(config.address, 16);
     }
     this.lightSensor = new BH1750_Library({
         address: this.address
