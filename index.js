@@ -1,7 +1,7 @@
 var Service;
 var Characteristic;
 var HomebridgeAPI;
-var BH1750_Library = require('bh1750-sensor');
+var BH1750_Library = require('bh1750_lux');
 
 module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
@@ -18,12 +18,12 @@ function BH1750(log, config) {
     const options = {};
 
     // Set I2C address, default to 0x23
-    options.address = config.address ? parseInt(config.address, 16) : 0x23;
+    options.addr = config.address ? parseInt(config.address, 16) : 0x23;
 
     // Set I2C bus number, default to 1
-    options.i2cBusNo = config.bus !== undefined ? config.bus : 1;
+    options.bus = config.bus !== undefined ? config.bus : 1;
 
-    this.log(`Initializing BH1750 sensor on I2C bus ${options.i2cBusNo} at address 0x${options.address.toString(16)}`);
+    this.log(`Initializing BH1750 sensor on I2C bus ${options.bus} at address 0x${options.addr.toString(16)}`);
 
     this.lightSensor = new BH1750_Library(options);
 

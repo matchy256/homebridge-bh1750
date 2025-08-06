@@ -17,6 +17,6 @@
         "homebridge": ">=0.2.0"
     },
     "dependencies" : {
-        "bh1750-sensor" : "0.0.3"
+        "bh1750_lux" : "^1.0.0"
     }
 }
