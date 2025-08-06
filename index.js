@@ -14,13 +14,18 @@ module.exports = function(homebridge) {
 function BH1750(log, config) {
     this.log = log;
     this.name = config.name;
-    this.address = 0x23;
-    if (config.address) {
-        this.address = parseInt(config.address, 16);
-    }
-    this.lightSensor = new BH1750_Library({
-        address: this.address
-    });
+
+    const options = {};
+
+    // Set I2C address, default to 0x23
+    options.address = config.address ? parseInt(config.address, 16) : 0x23;
+
+    // Set I2C bus number, default to 1
+    options.i2cBusNo = config.bus !== undefined ? config.bus : 1;
+
+    this.log(`Initializing BH1750 sensor on I2C bus ${options.i2cBusNo} at address 0x${options.address.toString(16)}`);
+
+    this.lightSensor = new BH1750_Library(options);
 
     // info service
     this.informationService = new Service.AccessoryInformation();
@@ -30,11 +35,7 @@ function BH1750(log, config) {
     .setCharacteristic(Characteristic.Model, config.model || "BH1750")
     .setCharacteristic(Characteristic.SerialNumber, config.serial || "A7CE1720-540E-4CCF-800D-9049B941812F");
 
-
-
-
     // lux service
-
     this.service_lux = new Service.LightSensor(this.name);
 
     this.service_lux.getCharacteristic(Characteristic.CurrentAmbientLightLevel)
